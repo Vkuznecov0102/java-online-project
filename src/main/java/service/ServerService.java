@@ -1,6 +1,6 @@
 package service;
 
-public interface ServerService {
+public interface ServerService extends Observable {
 
     void start();
 
