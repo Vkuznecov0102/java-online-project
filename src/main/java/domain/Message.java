@@ -7,8 +7,7 @@ import lombok.ToString;
 @RequiredArgsConstructor
 @Getter
 @ToString
-public class User {
-    private final String name;
-    private final String password;
-
+public class Message {
+    private final String content;
+    private final int userId;
 }

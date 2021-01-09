@@ -1,6 +1,8 @@
 package ru.itsjava;
 
 
+import dao.MessageDao;
+import dao.MessageDaoImpl;
 import dao.UserDao;
 import dao.UserDaoImpl;
 import service.ServerService;
@@ -23,6 +25,9 @@ public class Application {
 //        UserDao userDao=new UserDaoImpl(new Props());
 //        userDao.add("U3","P3");
 //        System.out.println(userDao.findByNameAndPassword("U3", "P3"));
+
+//        MessageDao messageDao=new MessageDaoImpl(new UserDaoImpl(new Props()));
+//        messageDao.findMessageByUserId(1);
 
     }
 }
