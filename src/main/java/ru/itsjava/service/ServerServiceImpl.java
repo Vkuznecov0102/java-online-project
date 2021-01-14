@@ -1,20 +1,20 @@
-package service;
+package ru.itsjava.service;
 
-import dao.UserDao;
-import dao.UserDaoImpl;
+import ru.itsjava.dao.UserDao;
+import ru.itsjava.dao.UserDaoImpl;
 import lombok.SneakyThrows;
-import utils.Props;
+import ru.itsjava.utils.Props;
 
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServerServiceImpl implements ServerService {
+public class ServerServiceImpl implements ServerService, Observable {
 
     public final static int PORT = 8001;
     public final List<Observer> observers = new ArrayList<>();
-    private final UserDao userDao=new UserDaoImpl(new Props());
+    private final UserDao userDao = new UserDaoImpl(new Props());
 
     @SneakyThrows
     @Override
@@ -26,7 +26,7 @@ public class ServerServiceImpl implements ServerService {
             Socket socket = serverSocket.accept();
 
             if (socket != null) {
-                Thread thread = new Thread(new ClientRunnable(socket, this,userDao));
+                Thread thread = new Thread(new ClientRunnable(socket, this, userDao));
                 thread.start();
             }
         }
@@ -43,14 +43,18 @@ public class ServerServiceImpl implements ServerService {
     }
 
     @Override
-    public void notifyObserver(String message) {
+    public void notifyObservers(String message) {
         for (Observer observer : observers) {
             observer.notifyMe(message);
         }
     }
 
     @Override
-    public void notifyObserverExpectMe(String message){
-
+    public void notifyObserversExpectOne(String message, Observer one) {
+        for (Observer observer : observers) {
+            if (!observer.equals(one)) {
+                observer.notifyMe(message);
+            }
+        }
     }
 }

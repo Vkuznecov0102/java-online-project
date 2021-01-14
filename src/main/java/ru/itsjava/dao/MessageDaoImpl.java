@@ -1,4 +1,4 @@
-package dao;
+package ru.itsjava.dao;
 
 import lombok.SneakyThrows;
 
@@ -58,7 +58,8 @@ public class MessageDaoImpl implements MessageDao {
     @SneakyThrows
     public void giveLastFifteenMessages(int id) {
         Connection connection = userDaoImpl.startConnection();
-        PreparedStatement preparedStatement=connection.prepareStatement("select content from chat_schema.messages where user_id=? limit 15;");
+        PreparedStatement preparedStatement=connection.prepareStatement("select content from " +
+                "chat_schema.messages where user_id=? limit 15;");
         preparedStatement.setInt(1,id);
         ResultSet resultSet=preparedStatement.executeQuery();
         while(resultSet.next()){

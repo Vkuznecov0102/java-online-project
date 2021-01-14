@@ -1,13 +1,8 @@
 package ru.itsjava;
 
 
-import dao.MessageDao;
-import dao.MessageDaoImpl;
-import dao.UserDao;
-import dao.UserDaoImpl;
-import service.ServerService;
-import service.ServerServiceImpl;
-import utils.Props;
+import ru.itsjava.service.ServerService;
+import ru.itsjava.service.ServerServiceImpl;
 
 public class Application {
 

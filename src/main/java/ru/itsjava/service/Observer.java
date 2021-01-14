@@ -1,4 +1,4 @@
-package service;
+package ru.itsjava.service;
 
 public interface Observer {
 

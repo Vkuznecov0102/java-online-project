@@ -1,4 +1,4 @@
-package utils;
+package ru.itsjava.utils;
 
 import lombok.SneakyThrows;
 

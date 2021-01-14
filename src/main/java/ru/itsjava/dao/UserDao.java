@@ -1,9 +1,11 @@
-package dao;
+package ru.itsjava.dao;
 
-import domain.User;
+import ru.itsjava.domain.User;
+
+import java.util.Optional;
 
 public interface UserDao {
-    User findByNameAndPassword(String name,String password);
+    Optional<User> findByNameAndPassword(String name, String password);
 
     void createUser(String name, String password);
 

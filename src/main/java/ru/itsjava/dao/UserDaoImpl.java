@@ -1,12 +1,13 @@
-package dao;
+package ru.itsjava.dao;
 
-import domain.User;
+import ru.itsjava.domain.User;
 import lombok.SneakyThrows;
-import service.ClientRunnable;
-import utils.Props;
+import ru.itsjava.service.ClientRunnable;
+import ru.itsjava.utils.Props;
 
 import java.io.BufferedReader;
 import java.sql.*;
+import java.util.Optional;
 
 public class UserDaoImpl implements UserDao {
 
@@ -33,7 +34,7 @@ public class UserDaoImpl implements UserDao {
 
     @SneakyThrows
     @Override
-    public User findByNameAndPassword(String name, String password) {
+    public Optional<User> findByNameAndPassword(String name, String password) {
         Connection connection = startConnection();
 
         try {
@@ -49,34 +50,16 @@ public class UserDaoImpl implements UserDao {
             int userCount = resultSet.getInt("cnt");
 
             if (userCount == 1) {
-                return new User(name, password);
-            } else {
-                printMenu();
+                return Optional.of(new User(name,password));
             }
-        } catch (UserNotFoundException |SQLException exception) {
+
+        } catch (SQLException exception) {
             exception.printStackTrace();
         }
-        return new User(name, password);
+        return Optional.empty();
     }
 
-    @SneakyThrows
-    private void printMenu() {
-        while (true) {
-            System.out.println("Неправильные логин и пароль. Вы хотите зарегистрироваться?\n" +
-                    "1)Да\n" +
-                    "2)Ввести данные заново\n" +
-                    "3)Выйти из приложения\n");
-            if(bufferedReader == null ) break;
-            int menuNum = bufferedReader.read();
-            if (menuNum == 1) {
-                clientRunnable.registration(bufferedReader);
-            } else if (menuNum == 2) {
-                clientRunnable.authorization(bufferedReader);
-            } else if (menuNum == 3) {
-                System.exit(0);
-            }
-        }
-    }
+
 
     @SneakyThrows
     @Override

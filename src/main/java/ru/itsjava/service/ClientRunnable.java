@@ -1,7 +1,7 @@
-package service;
+package ru.itsjava.service;
 
-import dao.UserDao;
-import domain.User;
+import ru.itsjava.dao.UserDao;
+import ru.itsjava.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class ClientRunnable implements Runnable, Observer {
@@ -24,7 +25,6 @@ public class ClientRunnable implements Runnable, Observer {
     public void run() {
         System.out.println("Client connected!");
 
-
         BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(socket.getInputStream()));
 
@@ -32,12 +32,14 @@ public class ClientRunnable implements Runnable, Observer {
 
         if(authorization(bufferedReader)){
             serverService.addObserver(this);
+            String welcome="В чат вошел пользователь "+ user.getName()+", приветствуем его! ";
+            System.out.println(welcome);
             try {
                 while (true) {
                     messageFromClient = bufferedReader.readLine();
                     if (messageFromClient == null) System.exit(0);
                     System.out.println(user.getName() + " : " + messageFromClient);
-                    serverService.notifyObserver(user.getName() + " : " + messageFromClient);
+                    serverService.notifyObservers(user.getName() + " : " + messageFromClient);
                 }
             }
             catch(SocketException socketException){
@@ -55,8 +57,14 @@ public class ClientRunnable implements Runnable, Observer {
             if (authorizationMessage.startsWith("!autho!")) {
                 String login = authorizationMessage.substring(7).split(":")[0];
                 String password = authorizationMessage.substring(7).split(":")[1];
-                user = userDao.findByNameAndPassword(login, password);
-                return true;
+                Optional<User> optionalUser = userDao.findByNameAndPassword(login, password);
+                if(optionalUser.isPresent()){
+                    user=optionalUser.get();
+                    return true;
+                }
+            }
+            else{
+                System.out.println("Неправильные логин и пароль");
             }
         }
         return false;
@@ -64,15 +72,16 @@ public class ClientRunnable implements Runnable, Observer {
 
     @SneakyThrows
     public void registration(BufferedReader bufferedReader) {
+        System.out.println("Это регистрация. Введите будущий логин.");
         String registrationMessage;
         while (true) {
             registrationMessage = bufferedReader.readLine();
             if (registrationMessage == null) break;
             System.out.println("Будущий логин");
             if (registrationMessage.startsWith("Будущий")) {
-                String login = registrationMessage.substring(5).split(":")[0];
+                String login = registrationMessage.substring(5).split(" ")[0];
                 System.out.println("Новый пароль");
-                String password = registrationMessage.substring(5).split(":")[1];
+                String password = registrationMessage.substring(5).split(" ")[1];
 
                 userDao.createUser(login, password);
 
